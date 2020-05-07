@@ -7,6 +7,7 @@ import com.example.realestaterentalbackend.model.User;
 import com.example.realestaterentalbackend.repository.UserRepository;
 import com.example.realestaterentalbackend.request.UserRequest;
 import com.example.realestaterentalbackend.service.AdvertService;
+import com.example.realestaterentalbackend.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +23,27 @@ import javax.validation.Valid;
 public class UserController {
     private final UserRepository userRepository;
     private final UserRequest userRequest;
+    private final MailService mailService;
     private final AdvertService advertService;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserRequest userRequest, AdvertService advertService) {
+    public UserController(UserRepository userRepository, UserRequest userRequest, MailService mailService,
+                          AdvertService advertService) {
         this.userRepository = userRepository;
         this.userRequest = userRequest;
+        this.mailService = mailService;
         this.advertService = advertService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserDto userDto) {
+        User user;
         try {
-            userRequest.validateData(userDto);
+            user = userRequest.validateData(userDto);
         } catch (CustomException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
+        mailService.sendEmail(user);
         return ResponseEntity.ok("Register successful");
     }
 
