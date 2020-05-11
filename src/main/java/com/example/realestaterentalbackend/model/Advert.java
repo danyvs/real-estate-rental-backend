@@ -26,7 +26,7 @@ public class Advert {
     private String ownerName;
     private String publicationDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private User user;
 
     @OneToMany(mappedBy = "advert")
@@ -39,6 +39,10 @@ public class Advert {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -145,14 +149,6 @@ public class Advert {
         this.ownerName = ownerName;
     }
 
-    public String getPublicationDate() {
-        return publicationDate;
-    }
-
-    public void setPublicationDate(String publicationDate) {
-        this.publicationDate = publicationDate;
-    }
-
     public User getUser() {
         return user;
     }
@@ -161,19 +157,11 @@ public class Advert {
         this.user = user;
     }
 
-    public List<AdvertImage> getAdvertImagesList() {
-        return advertImagesList;
+    public String getPublicationDate() {
+        return publicationDate;
     }
 
-    public void setAdvertImagesList(List<AdvertImage> advertImagesList) {
-        this.advertImagesList = advertImagesList;
-    }
-
-    public List<AdvertFeature> getAdvertFeaturesList() {
-        return advertFeaturesList;
-    }
-
-    public void setAdvertFeaturesList(List<AdvertFeature> advertFeaturesList) {
-        this.advertFeaturesList = advertFeaturesList;
+    public void setPublicationDate(String publicationDate) {
+        this.publicationDate = publicationDate;
     }
 }

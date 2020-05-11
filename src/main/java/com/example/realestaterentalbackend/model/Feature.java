@@ -1,7 +1,5 @@
 package com.example.realestaterentalbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -13,9 +11,8 @@ public class Feature {
 
     private String name;
 
-    @OneToMany(mappedBy = "feature")
-    @JsonIgnore
-    private List<AdvertFeature> advertFeatures;
+    @OneToMany(mappedBy = "features")
+    List<AdvertFeature> advertFeature;
 
     public int getId() {
         return id;
@@ -29,11 +26,10 @@ public class Feature {
         this.name = name;
     }
 
-    public List<AdvertFeature> getAdvertFeatures() {
-        return advertFeatures;
+    public List<AdvertFeature> getAdvertFeature() {
+        return advertFeature;
     }
-
-    public void setAdvertFeatures(List<AdvertFeature> advertFeature) {
-        this.advertFeatures = advertFeature;
+    public void setAdvertFeature(List<AdvertFeature> advertFeature) {
+        this.advertFeature = advertFeature;
     }
 }

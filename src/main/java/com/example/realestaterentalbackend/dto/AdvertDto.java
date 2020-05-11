@@ -1,8 +1,10 @@
 package com.example.realestaterentalbackend.dto;
 
+import java.util.Date;
 import java.util.List;
 
 public class AdvertDto {
+
     private String title;
     private double price;
     private int rooms;
@@ -13,111 +15,139 @@ public class AdvertDto {
     private int floor;
     private int floorsBuilding;
     private String propertyType;
+    private int views;
     private String location;
+    private String ownerName;
+    private Date publicationDate;
+
     private List<String> images;
-    private boolean[] features;
+    private List<String> advertFeatures;
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public int getRooms() {
         return rooms;
-    }
-
-    public void setRooms(int rooms) {
-        this.rooms = rooms;
     }
 
     public double getTotalArea() {
         return totalArea;
     }
 
-    public void setTotalArea(double totalArea) {
-        this.totalArea = totalArea;
-    }
-
     public double getUsableArea() {
         return usableArea;
-    }
-
-    public void setUsableArea(double usableArea) {
-        this.usableArea = usableArea;
     }
 
     public char getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(char orientation) {
-        this.orientation = orientation;
-    }
-
     public int getYear() {
         return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public int getFloor() {
         return floor;
     }
 
-    public void setFloor(int floor) {
-        this.floor = floor;
-    }
-
     public int getFloorsBuilding() {
         return floorsBuilding;
-    }
-
-    public void setFloorsBuilding(int floorsBuilding) {
-        this.floorsBuilding = floorsBuilding;
     }
 
     public String getPropertyType() {
         return propertyType;
     }
 
-    public void setPropertyType(String propertyType) {
-        this.propertyType = propertyType;
+    public int getViews() {
+        return views;
     }
 
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public Date getPublicationDate() {
+        return publicationDate;
     }
 
     public List<String> getImages() {
         return images;
     }
 
+    public List<String> getAdvertFeatures() {
+        return advertFeatures;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setRooms(int rooms) {
+        this.rooms = rooms;
+    }
+
+    public void setTotalArea(double totalArea) {
+        this.totalArea = totalArea;
+    }
+
+    public void setUsableArea(double usableArea) {
+        this.usableArea = usableArea;
+    }
+
+    public void setOrientation(char orientation) {
+        this.orientation = orientation;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setFloor(int floor) {
+        this.floor = floor;
+    }
+
+    public void setFloorsBuilding(int floorsBuilding) {
+        this.floorsBuilding = floorsBuilding;
+    }
+
+    public void setPropertyType(String propertyType) {
+        this.propertyType = propertyType;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
     public void setImages(List<String> images) {
         this.images = images;
     }
 
-    public boolean[] getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(boolean[] features) {
-        this.features = features;
+    public void setAdvertFeatures(List<String> advertFeatures) {
+        this.advertFeatures = advertFeatures;
     }
 }

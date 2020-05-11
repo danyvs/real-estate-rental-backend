@@ -5,16 +5,14 @@ import com.example.realestaterentalbackend.dto.UserDto;
 import com.example.realestaterentalbackend.exception.CustomException;
 import com.example.realestaterentalbackend.model.User;
 import com.example.realestaterentalbackend.repository.UserRepository;
+import com.example.realestaterentalbackend.request.AdvertRequest;
 import com.example.realestaterentalbackend.request.UserRequest;
 import com.example.realestaterentalbackend.service.AdvertService;
 import com.example.realestaterentalbackend.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -25,14 +23,16 @@ public class UserController {
     private final UserRequest userRequest;
     private final MailService mailService;
     private final AdvertService advertService;
+    private final AdvertRequest advertRequest;
 
     @Autowired
     public UserController(UserRepository userRepository, UserRequest userRequest, MailService mailService,
-                          AdvertService advertService) {
+                          AdvertService advertService, AdvertRequest advertRequest) {
         this.userRepository = userRepository;
         this.userRequest = userRequest;
         this.mailService = mailService;
         this.advertService = advertService;
+        this.advertRequest = advertRequest;
     }
 
     @PostMapping("/register")
@@ -47,10 +47,23 @@ public class UserController {
         return ResponseEntity.ok("Register successful");
     }
 
+    @PostMapping("/login")
+    public boolean login(@RequestParam String email, @RequestParam String password) {
+        User user;
+        user = userRepository.findByEmail(email);
+
+        return user.getPassword().equals(password);
+    }
+
     @PostMapping("/addAdvert")
-    public void addNewAdvert(@Valid @RequestBody AdvertDto advertDto) {
-        // User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByEmail("root@info.ro");
-        advertService.addNewAdvert(advertDto, user);
+    public ResponseEntity<?> addNewAdvert(@Valid @RequestBody AdvertDto advertDto) {
+        User user = userRepository.findByEmail("luiza@outlook.com");
+        try {
+            advertRequest.validateDataAdvert(advertDto, user);
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.ok("Advert ok");
     }
 }

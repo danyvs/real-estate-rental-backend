@@ -1,12 +1,8 @@
 package com.example.realestaterentalbackend.service;
 
 import com.example.realestaterentalbackend.dto.AdvertDto;
-import com.example.realestaterentalbackend.model.Advert;
-import com.example.realestaterentalbackend.model.AdvertImage;
-import com.example.realestaterentalbackend.model.User;
-import com.example.realestaterentalbackend.repository.AdvertFeatureRepository;
-import com.example.realestaterentalbackend.repository.AdvertImageRepository;
-import com.example.realestaterentalbackend.repository.AdvertRepository;
+import com.example.realestaterentalbackend.model.*;
+import com.example.realestaterentalbackend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +14,20 @@ public class AdvertService {
     private final AdvertRepository advertRepository;
     private final AdvertImageRepository advertImageRepository;
     private final AdvertFeatureRepository advertFeatureRepository;
+    private final FeatureRepository featureRepository;
+    UserRepository userRepository;
 
     @Autowired
     public AdvertService(AdvertRepository advertRepository, AdvertImageRepository advertImageRepository,
-                         AdvertFeatureRepository advertFeatureRepository) {
+                         AdvertFeatureRepository advertFeatureRepository, FeatureRepository featureRepository) {
         this.advertRepository = advertRepository;
         this.advertImageRepository = advertImageRepository;
         this.advertFeatureRepository = advertFeatureRepository;
+        this.featureRepository = featureRepository;
     }
 
     public void addNewAdvert(AdvertDto advertDto, User user) {
+
         Advert advert = new Advert();
         advert.setTitle(advertDto.getTitle());
         advert.setPrice(advertDto.getPrice());
@@ -45,6 +45,7 @@ public class AdvertService {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         advert.setPublicationDate(dateTimeFormatter.format(LocalDateTime.now()));
         advert.setUser(user);
+
         advertRepository.save(advert);
 
         for (String image : advertDto.getImages()) {
@@ -54,6 +55,16 @@ public class AdvertService {
             advertImageRepository.save(advertImage);
         }
 
-        // TODO: implement features
+        for (String feature : advertDto.getAdvertFeatures()) {
+            //if feaature exist in table features
+            Feature feature1 = featureRepository.findById(Integer.parseInt(feature));
+            if (feature1 != null ) {
+                AdvertFeature advertFeature = new AdvertFeature();
+                advertFeature.setAdvertI(Integer.parseInt(feature));
+                advertFeature.setAdvert(advert);
+                advertFeatureRepository.save(advertFeature);
+            }
+
+        }
     }
 }
