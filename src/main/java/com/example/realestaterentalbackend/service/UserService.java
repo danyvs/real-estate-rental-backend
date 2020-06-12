@@ -34,8 +34,7 @@ public class UserService {
             user.setPhoneNumber(userDto.getPhoneNumber());
             userRepository.save(user);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }
