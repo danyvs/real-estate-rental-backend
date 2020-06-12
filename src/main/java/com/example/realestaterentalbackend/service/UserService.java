@@ -24,4 +24,18 @@ public class UserService {
         user.setPhoneNumber(userDto.getPhoneNumber());
         return userRepository.save(user);
     }
+
+    public boolean updateUser(UserDto userDto, String oldPassword) {
+        User user = userRepository.findByEmail(userDto.getEmail());
+        if (user.getPassword().equals(oldPassword)) {
+            user.setFirstName(userDto.getFirstName());
+            user.setLastName(userDto.getLastName());
+            user.setPassword(userDto.getPassword());
+            user.setPhoneNumber(userDto.getPhoneNumber());
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

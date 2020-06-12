@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 public class UserValidator {
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserValidator(UserRepository userRepository) {
