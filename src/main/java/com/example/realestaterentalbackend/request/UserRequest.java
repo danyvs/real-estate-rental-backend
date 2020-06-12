@@ -12,22 +12,18 @@ import java.util.List;
 
 @Component
 public class UserRequest {
-    final UserService userService;
     final UserValidator userValidator;
 
     @Autowired
-    public UserRequest(UserService userService, UserValidator userValidator) {
-        this.userService = userService;
+    public UserRequest(UserValidator userValidator) {
         this.userValidator = userValidator;
     }
 
-    public User validateData(UserDto userDto) throws CustomException {
+    public void isUserDataValid(UserDto userDto) throws CustomException {
         List<String> errors = userValidator.validate(userDto);
         if (!errors.isEmpty()) {
             String errorMsg = String.join(", ", errors);
             throw new CustomException(errorMsg);
-        } else {
-            return userService.registerNewUser(userDto);
         }
     }
 }

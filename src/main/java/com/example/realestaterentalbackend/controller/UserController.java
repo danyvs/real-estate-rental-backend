@@ -9,6 +9,7 @@ import com.example.realestaterentalbackend.request.AdvertRequest;
 import com.example.realestaterentalbackend.request.UserRequest;
 import com.example.realestaterentalbackend.service.AdvertService;
 import com.example.realestaterentalbackend.service.MailService;
+import com.example.realestaterentalbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,49 +22,51 @@ import javax.validation.Valid;
 public class UserController {
     private final UserRepository userRepository;
     private final UserRequest userRequest;
+    private final UserService userService;
     private final MailService mailService;
-    private final AdvertService advertService;
-    private final AdvertRequest advertRequest;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserRequest userRequest, MailService mailService,
-                          AdvertService advertService, AdvertRequest advertRequest) {
+    public UserController(UserRepository userRepository, UserRequest userRequest, UserService userService,
+                          MailService mailService) {
         this.userRepository = userRepository;
         this.userRequest = userRequest;
+        this.userService = userService;
         this.mailService = mailService;
-        this.advertService = advertService;
-        this.advertRequest = advertRequest;
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserDto userDto) {
-        User user;
         try {
-            user = userRequest.validateData(userDto);
+            userRequest.isUserDataValid(userDto);
         } catch (CustomException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
+
+        User user = userService.registerNewUser(userDto);
         mailService.sendEmail(user);
         return ResponseEntity.ok("Register successful");
     }
 
-    @PostMapping("/login")
-    public boolean login(@RequestParam String email, @RequestParam String password) {
-        User user;
-        user = userRepository.findByEmail(email);
+//    @PostMapping("/login")
+//    public boolean login(@RequestParam String email, @RequestParam String password) {
+//        User user;
+//        user = userRepository.findByEmail(email);
+//
+//        return user.getPassword().equals(password);
+//    }
 
-        return user.getPassword().equals(password);
-    }
-
-    @PostMapping("/addAdvert")
-    public ResponseEntity<?> addNewAdvert(@Valid @RequestBody AdvertDto advertDto) {
-        User user = userRepository.findByEmail("luiza@outlook.com");
+    @PostMapping("/updateUser")
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto, @RequestParam String oldPassword) {
         try {
-            advertRequest.validateDataAdvert(advertDto, user);
-        } catch (CustomException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            userRequest.isUserDataValid(userDto);
+        } catch (CustomException exception) {
+            if (!exception.getMessage().equals("Email already exists in database!"))
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
 
-        return ResponseEntity.ok("Advert ok");
+        if (userService.updateUser(userDto, oldPassword)) {
+            return ResponseEntity.ok("Update successful");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords don't match");
     }
 }
