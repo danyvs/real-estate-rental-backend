@@ -28,7 +28,7 @@ public class UserValidator {
 
     public boolean emailExists(String email) {
         // email not in db => findByEmail return null ; null != null => return false
-        return userRepository.findByEmail(email) != null;
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public boolean validPassword(String password) {

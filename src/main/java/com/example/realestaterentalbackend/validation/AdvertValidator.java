@@ -1,7 +1,8 @@
-package com.example.realestaterentalbackend.validator;
+package com.example.realestaterentalbackend.validation;
 
 import com.example.realestaterentalbackend.dto.AdvertDto;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
