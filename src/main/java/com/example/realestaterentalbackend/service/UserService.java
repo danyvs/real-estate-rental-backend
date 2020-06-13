@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -30,14 +31,17 @@ public class UserService {
     }
 
     public boolean updateUser(UserDto userDto, String oldPassword) {
-        User user = userRepository.findByEmail(userDto.getEmail());
-        if (user.getPassword().equals(oldPassword)) {
-            user.setFirstName(userDto.getFirstName());
-            user.setLastName(userDto.getLastName());
-            user.setPassword(userDto.getPassword());
-            user.setPhoneNumber(userDto.getPhoneNumber());
-            userRepository.save(user);
-            return true;
+        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (user.getPassword().equals(oldPassword)) {
+                user.setFirstName(userDto.getFirstName());
+                user.setLastName(userDto.getLastName());
+                user.setPassword(userDto.getPassword());
+                user.setPhoneNumber(userDto.getPhoneNumber());
+                userRepository.save(user);
+                return true;
+            }
         }
         return false;
     }

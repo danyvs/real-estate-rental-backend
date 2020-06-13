@@ -1,15 +1,14 @@
 package com.example.realestaterentalbackend.request;
 
 import com.example.realestaterentalbackend.dto.AdvertDto;
-import com.example.realestaterentalbackend.dto.UserDto;
 import com.example.realestaterentalbackend.exception.CustomException;
 import com.example.realestaterentalbackend.model.User;
 import com.example.realestaterentalbackend.service.AdvertService;
-import com.example.realestaterentalbackend.validator.AdvertValidator;
+import com.example.realestaterentalbackend.validation.AdvertValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class AdvertRequest {
@@ -27,8 +26,7 @@ public class AdvertRequest {
         errors = advertValidator.validate(advertDto);
 
         if (!errors.isEmpty()) {
-            String errorMsg = errors.stream()
-                    .collect(Collectors.joining(",\n"));
+            String errorMsg = String.join(",\n", errors);
             throw  new CustomException(errorMsg);
         } else {
             advertService.addNewAdvert(advertDto, user);
