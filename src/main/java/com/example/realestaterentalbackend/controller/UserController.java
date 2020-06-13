@@ -1,18 +1,16 @@
 package com.example.realestaterentalbackend.controller;
 
-import com.example.realestaterentalbackend.dto.AdvertDto;
 import com.example.realestaterentalbackend.dto.UserDto;
 import com.example.realestaterentalbackend.exception.CustomException;
 import com.example.realestaterentalbackend.model.User;
 import com.example.realestaterentalbackend.repository.UserRepository;
-import com.example.realestaterentalbackend.request.AdvertRequest;
 import com.example.realestaterentalbackend.request.UserRequest;
-import com.example.realestaterentalbackend.service.AdvertService;
 import com.example.realestaterentalbackend.service.MailService;
 import com.example.realestaterentalbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -54,6 +52,11 @@ public class UserController {
 //
 //        return user.getPassword().equals(password);
 //    }
+
+    @GetMapping("/updateUser")
+    public User showUserToUpdate() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
     @PostMapping("/updateUser")
     public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto, @RequestParam String oldPassword) {
