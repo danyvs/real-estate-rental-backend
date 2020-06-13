@@ -1,10 +1,13 @@
 package com.example.realestaterentalbackend.service;
 
 import com.example.realestaterentalbackend.dto.UserDto;
+import com.example.realestaterentalbackend.model.Role;
 import com.example.realestaterentalbackend.model.User;
 import com.example.realestaterentalbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class UserService {
@@ -22,6 +25,7 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setRoles(Collections.singletonList(Role.ROLE_USER));
         return userRepository.save(user);
     }
 

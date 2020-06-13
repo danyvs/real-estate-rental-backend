@@ -27,6 +27,9 @@ public class User {
     @Size(min = 10, max = 10)
     private String phoneNumber;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    List<Role> roles;
+
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     List<Advert> advertList;
@@ -81,5 +84,13 @@ public class User {
 
     public void setAdvertList(List<Advert> advertList) {
         this.advertList = advertList;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
