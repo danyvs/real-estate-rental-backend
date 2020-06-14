@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class AdvertService {
@@ -56,9 +57,9 @@ public class AdvertService {
         }
 
         for (String feature : advertDto.getAdvertFeatures()) {
-            //if feaature exist in table features
-            Feature feature1 = featureRepository.findById(Integer.parseInt(feature));
-            if (feature1 != null ) {
+            //if feature exist in table features
+            Optional<Feature> feature1 = featureRepository.findById(Integer.parseInt(feature));
+            if (feature1.isPresent()) {
                 AdvertFeature advertFeature = new AdvertFeature();
                 advertFeature.setAdvertI(Integer.parseInt(feature));
                 advertFeature.setAdvert(advert);

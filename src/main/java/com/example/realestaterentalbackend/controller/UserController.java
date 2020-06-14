@@ -8,12 +8,16 @@ import com.example.realestaterentalbackend.request.UserRequest;
 import com.example.realestaterentalbackend.service.MailService;
 import com.example.realestaterentalbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -22,15 +26,33 @@ public class UserController {
     private final UserRequest userRequest;
     private final UserService userService;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserController(UserRepository userRepository, UserRequest userRequest, UserService userService,
-                          MailService mailService) {
+                          MailService mailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userRequest = userRequest;
         this.userService = userService;
         this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
     }
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "Welcome, Friend";
+    }
+
+    @GetMapping("/success")
+    public String success() {
+        return "success";
+    }
+
+    @GetMapping("/failure")
+    public String failure() {
+        return "failure";
+    }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserDto userDto) {
@@ -42,20 +64,28 @@ public class UserController {
 
         User user = userService.registerNewUser(userDto);
         mailService.sendEmail(user);
-        return ResponseEntity.ok("Register successful");
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/login").build();
     }
 
-//    @PostMapping("/login")
-//    public boolean login(@RequestParam String email, @RequestParam String password) {
-//        User user;
-//        user = userRepository.findByEmail(email);
-//
-//        return user.getPassword().equals(password);
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+        Optional<User> user;
+        user = userRepository.findByEmail(email);
+
+        if (user.isPresent()) {
+            if (passwordEncoder.matches(password, user.get().getPassword())) {
+                return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/welcome").build();
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+    }
 
     @GetMapping("/updateUser")
     public User showUserToUpdate() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return userRepository.findByEmail(userDetails.getUsername()).get();
     }
 
     @PostMapping("/updateUser")
@@ -68,7 +98,8 @@ public class UserController {
         }
 
         if (userService.updateUser(userDto, oldPassword)) {
-            return ResponseEntity.ok("Update successful");
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+                    .header(HttpHeaders.LOCATION, "/user/updateUser").build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords don't match");
     }
