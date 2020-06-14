@@ -64,7 +64,7 @@ public class UserController {
 
         User user = userService.registerNewUser(userDto);
         mailService.sendEmail(user);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/login").build();
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/success").build();
     }
 
     @PostMapping("/login")
@@ -74,7 +74,7 @@ public class UserController {
 
         if (user.isPresent()) {
             if (passwordEncoder.matches(password, user.get().getPassword())) {
-                return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/welcome").build();
+                return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/success").build();
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
         }
