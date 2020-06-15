@@ -8,7 +8,6 @@ import com.example.realestaterentalbackend.request.UserRequest;
 import com.example.realestaterentalbackend.service.MailService;
 import com.example.realestaterentalbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,7 +64,7 @@ public class UserController {
 
         User user = userService.registerNewUser(userDto);
         mailService.sendEmail(user);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/success").build();
+        return ResponseEntity.ok("Register successful");
     }
 
     @PostMapping("/login")

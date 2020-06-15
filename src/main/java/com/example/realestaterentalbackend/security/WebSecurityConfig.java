@@ -26,20 +26,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/user/**").permitAll()
-                //.antMatchers("/user/updateUser", "/user/welcome").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/user/updateUser").authenticated()
-                .antMatchers("/admin/**").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/register", "/user/login").permitAll()
+                .antMatchers("/user/success", "/user/updateUser").authenticated()
+                .antMatchers("/user/failure").permitAll()
+                .antMatchers("/advert/create", "/advert/updateAdvert/", "/advert/delete/").authenticated()
+                .antMatchers("/advert/getAdverts", "/advert/getAdvert/").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginProcessingUrl("/user/login").usernameParameter("email")
-                .defaultSuccessUrl("/user/success")
-                .and()
-                .csrf().disable();
+                .httpBasic();
+
     }
 
     @Bean
