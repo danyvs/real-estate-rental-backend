@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/register", "/user/**").permitAll()
                 //.antMatchers("/user/updateUser", "/user/welcome").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/user/updateUser").authenticated()
+                .antMatchers("/admin/**").permitAll()
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/user/login").usernameParameter("email")
