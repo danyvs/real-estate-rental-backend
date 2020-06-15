@@ -27,9 +27,7 @@ public class AdvertRequest {
 
         if (!errors.isEmpty()) {
             String errorMsg = String.join(",\n", errors);
-            throw  new CustomException(errorMsg);
-        } else {
-            advertService.addNewAdvert(advertDto, user);
+            throw new CustomException(errorMsg);
         }
     }
 }

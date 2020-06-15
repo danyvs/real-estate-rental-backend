@@ -164,4 +164,20 @@ public class Advert {
     public void setPublicationDate(String publicationDate) {
         this.publicationDate = publicationDate;
     }
+
+    public List<AdvertImage> getAdvertImagesList() {
+        return advertImagesList;
+    }
+
+    public void setAdvertImagesList(List<AdvertImage> advertImagesList) {
+        this.advertImagesList = advertImagesList;
+    }
+
+    public List<AdvertFeature> getAdvertFeaturesList() {
+        return advertFeaturesList;
+    }
+
+    public void setAdvertFeaturesList(List<AdvertFeature> advertFeaturesList) {
+        this.advertFeaturesList = advertFeaturesList;
+    }
 }

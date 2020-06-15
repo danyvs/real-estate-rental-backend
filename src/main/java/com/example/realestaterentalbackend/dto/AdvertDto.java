@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AdvertDto {
-
+    private int id;
     private String title;
     private double price;
     private int rooms;
@@ -22,6 +22,14 @@ public class AdvertDto {
 
     private List<String> images;
     private List<String> advertFeatures;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
