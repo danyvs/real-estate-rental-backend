@@ -101,7 +101,8 @@ public class UserController {
         try {
             userRequest.isUserDataValid(userDto);
         } catch (CustomException exception) {
-            if (!exception.getMessage().equals("Email already exists in database!, Passwords don't match!"))
+
+            if (!exception.getMessage().substring(0, 33).equals("Email already exists in database!"))
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
 
