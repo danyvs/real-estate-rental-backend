@@ -8,21 +8,11 @@ public class AdvertFeature {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    int advertI;
-
     @ManyToOne
     Advert advert;
 
     @ManyToOne
     Feature features;
-
-    public int getAdvertI() {
-        return advertI;
-    }
-
-    public void setAdvertI(int advertI) {
-        this.advertI = advertI;
-    }
 
     public int getId() {
         return id;
