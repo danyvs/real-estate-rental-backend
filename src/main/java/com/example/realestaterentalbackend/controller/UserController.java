@@ -75,7 +75,7 @@ public class UserController {
 
         if (user.isPresent()) {
             if (passwordEncoder.matches(password, user.get().getPassword())) {
-                return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/success").build();
+                return ResponseEntity.ok("Login successful");
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
         }
@@ -98,17 +98,16 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto, @RequestParam String oldPassword) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto) {
         try {
             userRequest.isUserDataValid(userDto);
         } catch (CustomException exception) {
-            if (!exception.getMessage().equals("Email already exists in database!"))
+            if (!exception.getMessage().equals("Email already exists in database!, Passwords don't match!"))
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
 
-        if (userService.updateUser(userDto, oldPassword)) {
-            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                    .header(HttpHeaders.LOCATION, "/user/success").build();
+        if (userService.updateUser(userDto)) {
+            return ResponseEntity.ok("Update successful");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords don't match");
     }
