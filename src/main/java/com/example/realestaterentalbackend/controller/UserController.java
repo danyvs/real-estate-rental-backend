@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,7 +65,7 @@ public class UserController {
 
         User user = userService.registerNewUser(userDto);
         mailService.sendEmail(user);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/login").build();
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/success").build();
     }
 
     @PostMapping("/login")
@@ -74,7 +75,7 @@ public class UserController {
 
         if (user.isPresent()) {
             if (passwordEncoder.matches(password, user.get().getPassword())) {
-                return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/welcome").build();
+                return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header(HttpHeaders.LOCATION, "/user/success").build();
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
         }
@@ -82,10 +83,18 @@ public class UserController {
     }
 
     @GetMapping("/updateUser")
-    public User showUserToUpdate() {
+    public UserDto showUserToUpdate() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return userRepository.findByEmail(userDetails.getUsername()).get();
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new UsernameNotFoundException("You are not logged in"));
+        UserDto userDto = new UserDto();
+        userDto.setEmail(user.getEmail());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setPassword(user.getPassword());
+        userDto.setMatchingPassword(user.getPassword());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        return userDto;
     }
 
     @PostMapping("/updateUser")
@@ -99,7 +108,7 @@ public class UserController {
 
         if (userService.updateUser(userDto, oldPassword)) {
             return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                    .header(HttpHeaders.LOCATION, "/user/updateUser").build();
+                    .header(HttpHeaders.LOCATION, "/user/success").build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords don't match");
     }
